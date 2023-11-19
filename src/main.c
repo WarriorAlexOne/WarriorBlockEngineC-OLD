@@ -3,13 +3,16 @@
 #include <string.h>
 #include <SDL2/SDL.h>
 
+#include "tools/strtools.h"
+#include "controls.h"
 #include "player.h"
 
 SDL_Window* window;
 SDL_Renderer* renderer;
 int quit = 0;
 int lastFrameTime = 0;
-int frameRate = 60;
+int frameTarget = 60;  //Default is 60.
+float gameTime = 1.0;  //Smaller number means slower game.
 
 typedef struct {
     int x;
@@ -19,8 +22,7 @@ typedef struct {
 } Rect;
 
 //Forward Declarations
-void fpsLoop (Player* player1);
-void input (Player* player1);
+void fpsLoop ();
 void render(Player player1);
 Rect defineRect(int x, int y, int w, int h);
 SDL_Rect drawRect(Rect rect);
@@ -28,14 +30,16 @@ int startSDL();
 
 
 int main (int argc, char **argv) {
+    //Variables
     Player player = {0,0,500,500};
     Player* pplayer = &player;
+    float deltaTime = gameTime/frameTarget;
     startSDL();
 
 
     //Main Loop
     while (!quit) {
-        fpsLoop(pplayer);
+        fpsLoop();
         input(pplayer);
         render(player);
     }
@@ -46,42 +50,10 @@ int main (int argc, char **argv) {
     SDL_Quit();
 }
 
-void fpsLoop (Player* player1) {
-    while (!SDL_TICKS_PASSED(SDL_GetTicks(), lastFrameTime + (1000/frameRate)));
+
+void fpsLoop () {
+    while (!SDL_TICKS_PASSED(SDL_GetTicks(), lastFrameTime + (1000/frameTarget)));  //Limits game to frames/second
     lastFrameTime = SDL_GetTicks();
-    playerLoop();
-}
-
-void input (Player* player1) {  //Various Inputs
-    SDL_Event event;
-    SDL_PollEvent(&event);
-    switch (event.type) {
-        case SDL_QUIT:
-            quit = 1;
-            break;
-        case SDL_KEYDOWN:
-            switch (event.key.keysym.sym) {
-                case SDLK_ESCAPE:
-                    quit = 1;
-                    break;
-                case SDLK_w:
-                    player1->y--;
-                    break;
-                case SDLK_a:
-                    player1->x--;
-                    break;
-                case SDLK_s:
-                    player1->y++;
-                    break;
-                case SDLK_d:
-                    player1->x++;
-                    break;
-            }
-        case SDL_KEYUP:
-            switch (event.key.keysym.sym) {
-
-            }
-    }
 }
 
 void render (Player player1) {  //Renderer & Shape Drawer
@@ -97,7 +69,7 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_RenderPresent(renderer);
 }
 
-Rect defineRect (int x, int y, int w, int h) {  //Create Rectangle
+Rect defineRect (int x, int y, int w, int h) {  //Define Rectangle Dimensions
     Rect rect;
     rect.x = x;
     rect.y = y;
@@ -106,7 +78,7 @@ Rect defineRect (int x, int y, int w, int h) {  //Create Rectangle
     return rect;
 }
 
-SDL_Rect drawRect (Rect rect) {
+SDL_Rect drawRect (Rect rect) {  //Create Rectangle
     SDL_Rect sdlRect;
     sdlRect.x = rect.x;
     sdlRect.y = rect.y;
@@ -122,7 +94,7 @@ int startSDL () {  //Start Window Creation & Renderer Creation
     }
 
     window = SDL_CreateWindow(
-        "SDLWarrior Window!!!",  //Title
+        "WarriorBlockEngine 0.2",  //Title
         SDL_WINDOWPOS_CENTERED,  //X Position
         SDL_WINDOWPOS_CENTERED,  //Y Position
         800,  //X Size
