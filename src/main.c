@@ -24,8 +24,6 @@ typedef struct {
 //Forward Declarations
 void fpsLoop ();
 void render(Player player1);
-Rect defineRect(int x, int y, int w, int h);
-SDL_Rect drawRect(Rect rect);
 int startSDL();
 
 
@@ -60,31 +58,12 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_SetRenderDrawColor(renderer, 2, 32, 100, 255);
     SDL_RenderClear(renderer);
 
-    Rect playerRect = defineRect(player1.x, player1.y, player1.sizeX, player1.sizeY);  //Define Player Dimensions
-    SDL_Rect playerDraw = drawRect(playerRect);  //Create Player
+    SDL_Rect playerDraw = {player1.x, player1.y, player1.sizeX, player1.sizeY};  //Create Player
 
     SDL_SetRenderDrawColor(renderer, 217, 177, 107, 255);
     SDL_RenderFillRect(renderer, &playerDraw);
 
     SDL_RenderPresent(renderer);
-}
-
-Rect defineRect (int x, int y, int w, int h) {  //Define Rectangle Dimensions
-    Rect rect;
-    rect.x = x;
-    rect.y = y;
-    rect.w = w;
-    rect.h = h;
-    return rect;
-}
-
-SDL_Rect drawRect (Rect rect) {  //Create Rectangle
-    SDL_Rect sdlRect;
-    sdlRect.x = rect.x;
-    sdlRect.y = rect.y;
-    sdlRect.w = rect.w;
-    sdlRect.h = rect.h;
-    return sdlRect;
 }
 
 int startSDL () {  //Start Window Creation & Renderer Creation
