@@ -7,19 +7,12 @@
 #include "controls.h"
 #include "player.h"
 
+char versionNumber[35] = "WarriorBlockEngine 0.2.1";  //Extra Memory Allocated for extra letters.
 SDL_Window* window;
 SDL_Renderer* renderer;
-int quit = 0;
 int lastFrameTime = 0;
 int frameTarget = 60;  //Default is 60.
-float gameTime = 1.0;  //Smaller number means slower game.
-
-typedef struct {
-    int x;
-    int y;
-    int w;
-    int h;
-} Rect;
+float gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 
 //Forward Declarations
 void fpsLoop ();
@@ -29,17 +22,19 @@ int startSDL();
 
 int main (int argc, char **argv) {
     //Variables
-    Player player = {0,0,500,500};
-    Player* pplayer = &player;
     float deltaTime = gameTime/frameTarget;
+    int quit = 0;
+    int* pquit = &quit;
+
     startSDL();
 
 
     //Main Loop
     while (!quit) {
         fpsLoop();
-        input(pplayer);
+        input(pplayer,pquit);
         render(player);
+        playerLoop(pplayer,deltaTime);
     }
 
 
@@ -73,7 +68,7 @@ int startSDL () {  //Start Window Creation & Renderer Creation
     }
 
     window = SDL_CreateWindow(
-        "WarriorBlockEngine 0.2",  //Title
+        versionNumber,  //Title
         SDL_WINDOWPOS_CENTERED,  //X Position
         SDL_WINDOWPOS_CENTERED,  //Y Position
         800,  //X Size

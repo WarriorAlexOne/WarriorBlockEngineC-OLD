@@ -4,37 +4,49 @@
 #include <SDL2/SDL.h>
 #include "player.h"
 
-int keyW = 0;
-int keyA = 0;
-int keyS = 0;
-int keyD = 0;
+void input (Player* player, int* quit);
 
 
-void input (Player* player);
-
-void input (Player* player) {  //Various Inputs
+void input (Player* player, int* quit) {  //Various Inputs
     SDL_Event event;
     SDL_PollEvent(&event);
+
     switch (event.type) {
-        case SDL_KEYDOWN:
+        case SDL_QUIT:  //What The X Button Does (This Could Be Fun :) )
+            *quit = 1;
+            break;
+        case SDL_KEYDOWN:  //Temporary Control System
             switch (event.key.keysym.sym) {
                 case SDLK_w:
-                    player->y -= 5;
+                    player->up = 1;
                     break;
                 case SDLK_a:
-                    player->x -= 5;
+                    player->left = 1;
                     break;
                 case SDLK_s:
-                    player->y += 5;
+                    player->down = 1;
                     break;
                 case SDLK_d:
-                    player->x += 5;
+                    player->right = 1;
                     break;
             }
-        case SDL_KEYUP:
+            break;
+        case SDL_KEYUP:  //Temporary Control System
             switch (event.key.keysym.sym) {
-
+                case SDLK_w:
+                    player->up = 0;
+                    break;
+                case SDLK_a:
+                    player->left = 0;
+                    break;
+                case SDLK_s:
+                    player->down = 0;
+                    break;
+                case SDLK_d:
+                    player->right = 0;
+                    break;
             }
+            break;
     }
 }
 
