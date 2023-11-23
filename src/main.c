@@ -4,19 +4,25 @@
 #include <SDL2/SDL.h>
 
 #include "tools/strtools.h"
+#include "tools/detection.h"
 #include "controls.h"
 #include "player.h"
+#include "walls.h"
 
-char versionNumber[35] = "WarriorBlockEngine 0.2.1";  //Extra Memory Allocated for extra letters.
+//Window Variables
+char versionNumber[35] = "WarriorBlockEngine 0.2.1 Dev 3";  //Extra Memory Allocated for extra letters.
 SDL_Window* window;
 SDL_Renderer* renderer;
+int windowDefaultSizeX = 1760;
+int windowDefaultSizeY = 960;
+//Frame Variables
 int lastFrameTime = 0;
 int frameTarget = 60;  //Default is 60.
 float gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 
 //Forward Declarations
 void fpsLoop ();
-void render(Player player1);
+void render (Player player1);
 int startSDL();
 
 
@@ -28,13 +34,13 @@ int main (int argc, char **argv) {
 
     startSDL();
 
-
     //Main Loop
     while (!quit) {
         fpsLoop();
         input(pplayer,pquit);
         render(player);
         playerLoop(pplayer,deltaTime);
+        detectionLoop(window);
     }
 
 
@@ -53,10 +59,13 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_SetRenderDrawColor(renderer, 2, 32, 100, 255);
     SDL_RenderClear(renderer);
 
-    SDL_Rect playerDraw = {player1.x, player1.y, player1.sizeX, player1.sizeY};  //Create Player
+    SDL_Rect testRect = {500,500,50,50};
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    SDL_RenderFillRect(renderer, &testRect);
 
-    SDL_SetRenderDrawColor(renderer, 217, 177, 107, 255);
-    SDL_RenderFillRect(renderer, &playerDraw);
+    SDL_Rect playerDraw = {player1.x, player1.y, player1.sizeX, player1.sizeY};  //Define Player
+    SDL_SetRenderDrawColor(renderer, 217, 177, 107, 255);  //Player Color
+    SDL_RenderFillRect(renderer, &playerDraw);  //Draw Player
 
     SDL_RenderPresent(renderer);
 }
@@ -71,8 +80,8 @@ int startSDL () {  //Start Window Creation & Renderer Creation
         versionNumber,  //Title
         SDL_WINDOWPOS_CENTERED,  //X Position
         SDL_WINDOWPOS_CENTERED,  //Y Position
-        800,  //X Size
-        600,  //Y Size
+        windowDefaultSizeX,  //X Size
+        windowDefaultSizeY,  //Y Size
         SDL_WINDOW_SHOWN |  //Flags (Properties Of Window)*/
         SDL_WINDOW_RESIZABLE
     );
