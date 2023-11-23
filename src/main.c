@@ -10,7 +10,7 @@
 #include "walls.h"
 
 //Window Variables
-char versionNumber[35] = "WarriorBlockEngine 0.2.1 Dev 3";  //Extra Memory Allocated for extra letters.
+char versionNumber[35] = "WarriorBlockEngine 0.2.1.1";  //Extra Memory Allocated for extra letters.
 SDL_Window* window;
 SDL_Renderer* renderer;
 int windowDefaultSizeX = 1760;
