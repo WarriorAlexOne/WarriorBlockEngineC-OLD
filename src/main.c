@@ -18,7 +18,7 @@ int windowDefaultSizeY = 960;
 //Frame Variables
 int lastFrameTime = 0;
 int frameTarget = 60;  //Default is 60.
-float gameTime = 1.0;  //Smaller number means slower game. Default is 1.
+double gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 
 //Forward Declarations
 void fpsLoop ();
@@ -28,14 +28,15 @@ int startSDL();
 
 int main (int argc, char **argv) {
     //Variables
-    float deltaTime = gameTime/frameTarget;
+    double deltaTime = gameTime/frameTarget;
     int quit = 0;
     int* pquit = &quit;
 
     startSDL();
-
+    initControls();
     //Main Loop
     while (!quit) {
+        updateControls();
         fpsLoop();
         input(pplayer,pquit);
         render(player);
@@ -63,7 +64,7 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(renderer, &testRect);
 
-    SDL_Rect playerDraw = {player1.x, player1.y, player1.sizeX, player1.sizeY};  //Define Player
+    SDL_Rect playerDraw = {player1.transform.position.x, player1.transform.position.y, player1.transform.size.x, player1.transform.size.y};  //Define Player
     SDL_SetRenderDrawColor(renderer, 217, 177, 107, 255);  //Player Color
     SDL_RenderFillRect(renderer, &playerDraw);  //Draw Player
 

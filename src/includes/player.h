@@ -2,14 +2,13 @@
 #define PLAYER_H
 
 #include "../tools/detection.h"
+#include "../tools/vector.h"
+#include "../tools/transform.h"
 
 //Player Values
 typedef struct {
     //Coords
-    float x;
-    float y;
-    float sizeX;
-    float sizeY;
+    Transform transform;
     //Controls
     int up;
     int left;
@@ -48,24 +47,24 @@ float playerLoop (Player* player, float deltaTime);
 float playerLoop (Player* player, float deltaTime) {
     //Temporary Movement
     if (player->up) {
-        player->y -= 5;
+        player->transform.position.x -= 5;
     }
     if (player->left) {
-        player->x -= 5;
+        player->transform.position.x -= 5;
     }
     if (player->down) {
-        player->y += 5;
+        player->transform.position.y += 5;
     }
     if (player->right) {
-        player->x += 5;
+        player->transform.position.y += 5;
     }
     //Mouse Drag
-    if (collisionDetection(player->x,player->y,player->sizeX,player->sizeY,mouseX,mouseY,0,0) && player->leftClick) {
+    if (collisionDetection(player->transform.position.x,player->transform.position.y,player->transform.size.x,player->transform.size.y,mouseX,mouseY,0,0) && player->leftClick) {
         player->dragged = 1;
     }
     if (player->dragged) {
-        player->x = mouseX-player->sizeX/2;
-        player->y = mouseY-player->sizeY/2;
+        player->transform.position.x = mouseX-player->transform.size.x/2;
+        player->transform.position.y = mouseY-player->transform.size.y/2;
         if (!player->leftClick) player->dragged = 0;  //Cheeky Nested If. Nothing to see here, move along.
     }
 }
