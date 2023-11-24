@@ -19,6 +19,7 @@ int justReleased[
     SDL_NUM_SCANCODES
 ];
 
+// Checks if a key is pressed, justPressed, or justReleased.
 int checkPressed (int scancode) {
     return pressed[scancode];
 }
@@ -29,6 +30,7 @@ int checkJustReleased (int scancode) {
     return justReleased[scancode];
 }
 
+//This function is called once at the start of the program.
 void initControls () {
     for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
         pressed[i] = 0;
@@ -37,6 +39,7 @@ void initControls () {
     }
 }
 
+//This function is called every frame.
 void updateControls () {
     const Uint8* state = SDL_GetKeyboardState(NULL);
     for (int i = 0; i < SDL_NUM_SCANCODES; i++) {
