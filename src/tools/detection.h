@@ -17,8 +17,7 @@ int detectionLoop (SDL_Window* window) {
 }
 
 int collisionDetection (int x1, int y1, int sizeX1, int sizeY1, int x2, int y2, int sizeX2, int sizeY2) {
-    if (x1 < x2 + sizeX2 && x1 + sizeX1 > x2 && y1 < y2 + sizeY2 && y1 + sizeY1 > y2) return 1;
-    else return 0;
+    return x1 < x2 + sizeX2 && x1 + sizeX1 > x2 && y1 < y2 + sizeY2 && y1 + sizeY1 > y2;
 }
 
 #endif

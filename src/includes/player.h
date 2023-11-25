@@ -10,15 +10,15 @@ typedef struct {
     //Coords
     Transform transform;
     //Controls
-    int up;
-    int left;
-    int down;
-    int right;
-    int leftClick;
-    int rightClick;
-    int middleClick;
+    short up;
+    short left;
+    short down;
+    short right;
+    short leftClick;
+    short rightClick;
+    short middleClick;
     //Status
-    int dragged;
+    short dragged;
 } Player;
 
 Player player = {

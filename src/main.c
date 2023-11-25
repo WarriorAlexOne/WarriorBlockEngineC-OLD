@@ -16,8 +16,8 @@ SDL_Renderer* renderer;
 int windowDefaultSizeX = 1760;
 int windowDefaultSizeY = 960;
 //Frame Variables
-int lastFrameTime = 0;
-int frameTarget = 60;  //Default is 60.
+double lastFrameTime = 0;
+short frameTarget = 60;  //Default is 60.
 double gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 
 //Forward Declarations

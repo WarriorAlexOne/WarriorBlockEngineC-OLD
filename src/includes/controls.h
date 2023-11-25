@@ -5,6 +5,11 @@
 #include "player.h"
 
 //Forward Declarations
+int checkPressed (int scancode);
+int checkJustPressed (int scancode);
+int checkJustReleased (int scancode);
+void initControls ();
+void updateControls ();
 void input (Player* player, int* quit);
 
 int pressed[
@@ -62,7 +67,7 @@ void updateControls () {
             pressed[i] = 0;
         }
     }
-}
+} 
 
 
 
@@ -71,42 +76,9 @@ void input (Player* player, int* quit) {  //Various Inputs
     SDL_Event event;
     SDL_PollEvent(&event);
 
+    if (event.type == SDL_QUIT) *quit = 1;  //X Button. Could be fun to play with.
+
     switch (event.type) {
-        case SDL_QUIT:  //What The X Button Does (This Could Be Fun :) )
-            *quit = 1;
-            break;
-        case SDL_KEYDOWN:  //Temporary Control System
-            switch (event.key.keysym.sym) {
-                case SDLK_w:
-                    player->up = 1;
-                    break;
-                case SDLK_a:
-                    player->left = 1;
-                    break;
-                case SDLK_s:
-                    player->down = 1;
-                    break;
-                case SDLK_d:
-                    player->right = 1;
-                    break;
-            }
-            break;
-        case SDL_KEYUP:  //Temporary Control System
-            switch (event.key.keysym.sym) {
-                case SDLK_w:
-                    player->up = 0;
-                    break;
-                case SDLK_a:
-                    player->left = 0;
-                    break;
-                case SDLK_s:
-                    player->down = 0;
-                    break;
-                case SDLK_d:
-                    player->right = 0;
-                    break;
-            }
-            break;
         case SDL_MOUSEBUTTONDOWN:  //Temporary Control System
             switch (event.button.button) {
                 case SDL_BUTTON_LEFT:
