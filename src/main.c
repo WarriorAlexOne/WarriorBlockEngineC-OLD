@@ -10,7 +10,7 @@
 #include "walls.h"
 
 //Window Variables
-char versionNumber[35] = "WarriorBlockEngine 0.2.2";  //Extra Memory Allocated for extra letters.
+char versionNumber[35] = "WarriorBlockEngine 0.2.2.1";  //Extra Memory Allocated for extra letters.
 SDL_Window* window;
 SDL_Renderer* renderer;
 int windowDefaultSizeX = 1760;
@@ -37,10 +37,10 @@ int main (int argc, char **argv) {
     initControls();
     //Main Loop
     while (!quit) {
-        updateControls();
-        mouseInput(pplayer);
         fpsLoop();
         render(player);
+        updateControls();
+        mouseInput(pplayer);
         playerLoop(pplayer,deltaTime);
         detectionLoop(window);
     }
