@@ -10,11 +10,13 @@
 #include "walls.h"
 
 //Window Variables
-char versionNumber[35] = "WarriorBlockEngine 0.2.1.1";  //Extra Memory Allocated for extra letters.
+char versionNumber[35] = "WarriorBlockEngine 0.2.2";  //Extra Memory Allocated for extra letters.
 SDL_Window* window;
 SDL_Renderer* renderer;
 int windowDefaultSizeX = 1760;
 int windowDefaultSizeY = 960;
+int quit = 0;
+int* pquit = &quit;
 //Frame Variables
 double lastFrameTime = 0;
 short frameTarget = 60;  //Default is 60.
@@ -24,21 +26,20 @@ double gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 void fpsLoop ();
 void render (Player player1);
 int startSDL();
+void mouseInput (Player* player);
 
 
 int main (int argc, char **argv) {
     //Variables
     double deltaTime = gameTime/frameTarget;
-    int quit = 0;
-    int* pquit = &quit;
 
     startSDL();
     initControls();
     //Main Loop
     while (!quit) {
         updateControls();
+        mouseInput(pplayer);
         fpsLoop();
-        input(pplayer,pquit);
         render(player);
         playerLoop(pplayer,deltaTime);
         detectionLoop(window);
@@ -98,5 +99,41 @@ int startSDL () {  //Start Window Creation & Renderer Creation
     }
 
     return printf("Initialization Complete\n");
+}
+
+void mouseInput (Player* player) {  //Mouse Inputs (Very temporary. Will be changed soon)
+    SDL_Event event;
+    SDL_PollEvent(&event);
+
+    if (event.type == SDL_QUIT) *pquit = 1;  //X Button. Could be fun to play with.
+
+    switch (event.type) {
+        case SDL_MOUSEBUTTONDOWN:  //Temporary Control System
+            switch (event.button.button) {
+                case SDL_BUTTON_LEFT:
+                player->leftClick = 1;
+                break;
+                case SDL_BUTTON_RIGHT:
+                player->rightClick = 1;
+                break;
+                case SDL_BUTTON_MIDDLE:
+                player->middleClick = 1;
+                break;
+            }
+            break;
+        case SDL_MOUSEBUTTONUP:  //Temporary Control System
+            switch (event.button.button) {
+                case SDL_BUTTON_LEFT:
+                player->leftClick = 0;
+                break;
+                case SDL_BUTTON_RIGHT:
+                player->rightClick = 0;
+                break;
+                case SDL_BUTTON_MIDDLE:
+                player->middleClick = 0;
+                break;
+            }
+            break;
+    }
 }
 

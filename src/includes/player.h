@@ -1,9 +1,12 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <SDL2/SDL.h>
 #include "../tools/detection.h"
 #include "../tools/vector.h"
 #include "../tools/transform.h"
+#include "controls.h"
+
 
 //Player Values
 typedef struct {
@@ -23,10 +26,7 @@ typedef struct {
 
 Player player = {
 //Coords
-    0,  //x
-    0,  //y
-    500,  //sizeX
-    500,  //sizeY
+    {{100,100},{500,500},{0,0}},
 //Controls
     0,  //up
     0,  //left
@@ -46,17 +46,17 @@ float playerLoop (Player* player, float deltaTime);
 
 float playerLoop (Player* player, float deltaTime) {
     //Temporary Movement
-    if (player->up) {
+    if (checkPressed(SDL_SCANCODE_W)) {  //Up
+        player->transform.position.y -= 5;
+    }
+    if (checkPressed(SDL_SCANCODE_A)) {  //Left
         player->transform.position.x -= 5;
     }
-    if (player->left) {
-        player->transform.position.x -= 5;
-    }
-    if (player->down) {
+    if (checkPressed(SDL_SCANCODE_S)) {  //Down
         player->transform.position.y += 5;
     }
-    if (player->right) {
-        player->transform.position.y += 5;
+    if (checkPressed(SDL_SCANCODE_D)) {  //Right
+        player->transform.position.x += 5;
     }
     //Mouse Drag
     if (collisionDetection(player->transform.position.x,player->transform.position.y,player->transform.size.x,player->transform.size.y,mouseX,mouseY,0,0) && player->leftClick) {
