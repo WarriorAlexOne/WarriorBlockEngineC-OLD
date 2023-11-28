@@ -1,7 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "constants.h"
+#include "variables.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 #include "../tools/detection.h"
 #include "../tools/vector.h"
 #include "../tools/transform.h"
@@ -12,6 +16,8 @@
 typedef struct {
     //Coords
     Transform transform;
+    //Stats
+    int speed;
     //Controls
     short up;
     short left;
@@ -27,6 +33,8 @@ typedef struct {
 Player player = {
 //Coords
     {{100,100},{500,500},{0,0}},
+//Stats
+    180,
 //Controls
     0,  //up
     0,  //left
@@ -41,22 +49,33 @@ Player player = {
 Player* pplayer = &player;
 
 //Forward Declarations
-float playerLoop (Player* player, float deltaTime);
+double playerLoop (Player* player);
 
 
-float playerLoop (Player* player, float deltaTime) {
+double playerLoop (Player* player) {
+    //printf("%i\n",); //Debugging Print
+    //Variables
+    double deltaTime = gameTime/frameTarget;
+    double screenBorderX = 900;
+
+    //Camera Code
+    if (player->transform.position.x > screenBorderX) {
+        player->transform.position.x = screenBorderX;
+        cameraX += player->speed * deltaTime;
+    }
+
     //Temporary Movement
     if (checkPressed(SDL_SCANCODE_W)) {  //Up
-        player->transform.position.y -= 5;
+        player->transform.position.y -= player->speed * deltaTime;
     }
     if (checkPressed(SDL_SCANCODE_A)) {  //Left
-        player->transform.position.x -= 5;
+        player->transform.position.x -= player->speed * deltaTime;
     }
     if (checkPressed(SDL_SCANCODE_S)) {  //Down
-        player->transform.position.y += 5;
+        player->transform.position.y += player->speed * deltaTime;
     }
     if (checkPressed(SDL_SCANCODE_D)) {  //Right
-        player->transform.position.x += 5;
+        player->transform.position.x += player->speed * deltaTime;
     }
     //Mouse Drag
     if (collisionDetection(player->transform.position.x,player->transform.position.y,player->transform.size.x,player->transform.size.y,mouseX,mouseY,0,0) && player->leftClick) {

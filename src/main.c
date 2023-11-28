@@ -1,26 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL2/SDL.h>
 
+#include "constants.h"
+#include "variables.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include "tools/strtools.h"
 #include "tools/detection.h"
 #include "controls.h"
 #include "player.h"
 #include "walls.h"
-
-//Window Variables
-char versionNumber[35] = "WarriorBlockEngine 0.2.2.1";  //Extra Memory Allocated for extra letters.
-SDL_Window* window;
-SDL_Renderer* renderer;
-int windowDefaultSizeX = 1760;
-int windowDefaultSizeY = 960;
-int quit = 0;
-int* pquit = &quit;
-//Frame Variables
-double lastFrameTime = 0;
-short frameTarget = 60;  //Default is 60.
-double gameTime = 1.0;  //Smaller number means slower game. Default is 1.
 
 //Forward Declarations
 void fpsLoop ();
@@ -30,24 +21,26 @@ void mouseInput (Player* player);
 
 
 int main (int argc, char **argv) {
-    //Variables
-    double deltaTime = gameTime/frameTarget;
-
     startSDL();
     initControls();
+
+
     //Main Loop
     while (!quit) {
         fpsLoop();
         render(player);
         updateControls();
         mouseInput(pplayer);
-        playerLoop(pplayer,deltaTime);
+        playerLoop(pplayer);
         detectionLoop(window);
+        printf("CameraX: %lf\n",cameraX); //Debugging Print
     }
 
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
+    IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
 }
 
@@ -61,7 +54,7 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_SetRenderDrawColor(renderer, 2, 32, 100, 255);
     SDL_RenderClear(renderer);
 
-    SDL_Rect testRect = {500,500,50,50};
+    SDL_Rect testRect = {500-cameraX,500,50,50};
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(renderer, &testRect);
 
@@ -72,13 +65,23 @@ void render (Player player1) {  //Renderer & Shape Drawer
     SDL_RenderPresent(renderer);
 }
 
-int startSDL () {  //Start Window Creation & Renderer Creation
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+int startSDL () {  //Initialize and create everything necessary.
+    if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {  //Automatically initialized. If a fault is detected, the program ends.
         printf("SDL Initialization Failed: %s\n", SDL_GetError());
         return 0;
     }
 
-    window = SDL_CreateWindow(
+    if (IMG_Init(IMG_INIT_PNG != IMG_INIT_PNG)) {  //Image Lib Initialized
+        printf("Image Initialization Failed: %s\n", SDL_GetError());
+        return 0;
+    }
+
+    if (TTF_Init() == -1) {  //Text Lib Initialized
+        printf("TTF Initialization Failed: %s\n", SDL_GetError());
+        return 0;
+    }
+
+    window = SDL_CreateWindow(  //Creating & Setting The Window Properties
         versionNumber,  //Title
         SDL_WINDOWPOS_CENTERED,  //X Position
         SDL_WINDOWPOS_CENTERED,  //Y Position
@@ -87,18 +90,18 @@ int startSDL () {  //Start Window Creation & Renderer Creation
         SDL_WINDOW_SHOWN |  //Flags (Properties Of Window)*/
         SDL_WINDOW_RESIZABLE
     );
-    if (!window) {
+    if (!window) {  //If Window Creation failed, end program.
         printf("Window Creation Failed: %s\n", SDL_GetError());
         return 0;
     }
 
-    renderer = SDL_CreateRenderer(window, -1, 0);
-    if (!renderer) {
+    renderer = SDL_CreateRenderer(window, -1, 0);  //SDL Renderer Creation
+    if (!renderer) {  //If Renderer fails, end program.
         printf("Renderer Creation Failed: %s\n", SDL_GetError());
         return 0;
     }
 
-    return printf("Initialization Complete\n");
+    return printf("Initialization Complete\n");  //If SDL loads without error, program starts.
 }
 
 void mouseInput (Player* player) {  //Mouse Inputs (Very temporary. Will be changed soon)

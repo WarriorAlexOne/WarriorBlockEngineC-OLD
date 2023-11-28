@@ -1,7 +1,11 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+#include "constants.h"
+#include "variables.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 //Forward Declarations
 int checkPressed (int scancode);
